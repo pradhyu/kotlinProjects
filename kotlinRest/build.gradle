@@ -1,0 +1,47 @@
+group 'kotlinRest'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.1.4-3'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+    maven { url "https://maven.google.com" }
+}
+
+
+ext {
+    fuelLibVersion = "1.8.0"
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile 'com.github.kittinunf.fuel:fuel:' + fuelLibVersion
+    compile 'com.github.kittinunf.fuel:fuel-android:' + fuelLibVersion
+    compile 'com.github.kittinunf.fuel:fuel-rxjava:' + fuelLibVersion
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+
