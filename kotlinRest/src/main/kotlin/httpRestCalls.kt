@@ -12,6 +12,10 @@ import com.icoderman.woocommerce.ApiVersionType
 import com.icoderman.woocommerce.WooCommerceAPI
 import com.icoderman.woocommerce.WooCommerce
 import com.icoderman.woocommerce.oauth.OAuthConfig
+import Product
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
 
 
 
@@ -38,12 +42,15 @@ object wooCommerce {
 
         // Get all with request parameters
         val params = HashMap<String, String>()
-        params["per_page"] = "100"
+        params["per_page"] = "1"
         params["offset"] = "0"
         val products = wooCommerce.getAll(EndpointBaseType.PRODUCTS.value, params)
-
-        println(products.toString())
-    }
+        val type = object : TypeToken<List<Product>>() {
+        }.type
+        products.forEach{ product -> println(product.toString());Gson().fromJson(product.toString(),Product::class.java)}
+        // var productObjs:List<Product>  = Gson().fromJson(products.toString(), type)
+        //productObjs.forEach {productItem -> println(productItem)}
+        }
 
 
 }
