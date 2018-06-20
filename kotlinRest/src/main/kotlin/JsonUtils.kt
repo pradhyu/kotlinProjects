@@ -14,6 +14,11 @@ fun parse(name: String) : Any? {
 }
 
 fun main(args: Array<String>) {
+
+    println(productsList())
+}
+
+fun product1 () {
     // readText is a extension function
     val productFilePath = "src/main/resources/product.json"
     val personJsonPath="src/main/resources/person.json"
@@ -26,4 +31,12 @@ fun main(args: Array<String>) {
     products?.forEach {
         println(it.id.toString() + ": " + it.name)
     }
+
+}
+
+fun productsList (): List<Product>?  {
+    val PRODUCTS_JSON_PATH = "/Users/pkshrestha/AndroidStudioProjects/wallclock/app/product.json"
+    val jsonContent = File(PRODUCTS_JSON_PATH).readText()
+    val jsonArray=Klaxon().parseArray<Product>(jsonContent)
+    return jsonArray
 }

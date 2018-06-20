@@ -6,24 +6,20 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.getOrElse
 import com.icoderman.woocommerce.EndpointBaseType
-import com.sun.deploy.config.JREInfo.getAll
 import java.util.HashMap
 import com.icoderman.woocommerce.ApiVersionType
 import com.icoderman.woocommerce.WooCommerceAPI
 import com.icoderman.woocommerce.WooCommerce
 import com.icoderman.woocommerce.oauth.OAuthConfig
-import Product
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-
-
 
 
 fun main(args: Array<String>) {
     //testHttp()
-    val tempValue = openWeatherApi.getWeatherInFah("cary,us")
-    Log.i("Weather temperature", tempValue)
-    wooCommerce.getProducts()
+    for(i in 1 until  1000) {
+        val tempValue = openWeatherApi.getWeatherInFah("cary,us")
+        Log.i("Weather temperature[${i}", tempValue)
+    }
+    //wooCommerce.getProducts()
    // System.exit(0)
 }
 
@@ -31,6 +27,7 @@ fun main(args: Array<String>) {
 // get consumer key and secret by adding Keys/Apps following above link
 //https://support.sellbrite.com/hc/en-us/articles/208307668-Configuring-Your-WooCommerce-Store-and-Generating-API-Keys-version-2-x-
 //woocommerce => user must be administrator
+// woocommerce API v1: https://woocommerce.github.io/woocommerce-rest-api-docs/wp-api-v1.html#products
 object wooCommerce {
     // Setup client
     fun getProducts() {
@@ -41,18 +38,35 @@ object wooCommerce {
         val wooCommerce = WooCommerceAPI(config, ApiVersionType.V1)
 
         // Get all with request parameters
+
         val params = HashMap<String, String>()
-        params["per_page"] = "1"
+        println("Categories: ")
+        params["per_page"] = "10"
         params["offset"] = "0"
-        val products = wooCommerce.getAll(EndpointBaseType.PRODUCTS.value, params)
-        val type = object : TypeToken<List<Product>>() {
-        }.type
-        products.forEach{ product -> println(product.toString());Gson().fromJson(product.toString(),Product::class.java)}
-        // var productObjs:List<Product>  = Gson().fromJson(products.toString(), type)
-        //productObjs.forEach {productItem -> println(productItem)}
+
+        // categories
+        val categories = wooCommerce.getAll(EndpointBaseType.PRODUCTS_CATEGORIES.value, params)
+        categories.forEach{ category ->
+            val cMap = category as HashMap<String, Any>
+            println("Category: " + cMap["name"])
         }
 
+        println("Products: ")
+        params["per_page"] = "10"
+        params["offset"] = "10"
+        val products = wooCommerce.getAll(EndpointBaseType.PRODUCTS.value, params)
+        // iterate over the list and convert it to product object
+        // the products is list of hash maps.
+        products.forEach { product->
+            val pMap=product as HashMap<String, Any>
+            println("Product: " + pMap["id"] +" : "+ pMap["name"])
+        }
 
+        println("Searching product: ")
+        val resultProducts = wooCommerce.get(EndpointBaseType.PRODUCTS.value, 10592)
+            println(resultProducts)
+
+    }
 }
 
 object Log {
