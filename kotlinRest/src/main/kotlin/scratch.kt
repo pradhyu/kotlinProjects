@@ -4,27 +4,25 @@ import com.beust.klaxon.Klaxon
 import com.beust.klaxon.Parser
 import com.icoderman.woocommerce.EndpointBaseType
 import com.icoderman.woocommerce.HttpMethod
-import com.icoderman.woocommerce.oauth.OAuthConfig
-import com.icoderman.woocommerce.oauth.OAuthSignature
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.result.getOrElse
+import com.oauth1.OAuthConfig
+import com.oauth1.OAuthSignature
 import com.woocommerce.model.Product
-import java.io.File
 import java.util.*
 
 
 fun main(args: Array<String>) {
     val params = HashMap<String, String>()
-    println("Products: ")
     //params["offset"] = "0"
-    params["oauth_version"]="1"
-    params["fields"]="title%2Cid%2Cdescription" // doesn't work if we add multiple fields here, %2C is ,remember capital C
-    //params["filter[limit]"] = "100"
+    params["fields"]=OAuthSignature.replaceSpecialChars("title,id,description" )// doesn't work if we add multiple fields here, %2C is ,remember capital C
+   params["filter%5Blimit%5D"] = "100"
     val productsJson= wooCommerceLegacyV3Fuel.getAll(EndpointBaseType.PRODUCTS.value, params)
     println(productsJson)
     parseProducts(productsJson)
 
 }
+
 
 
 data class productsMapper (
@@ -38,7 +36,7 @@ fun parseProducts( productsJson: String) {
     val productsObjs =parser.parse(StringBuilder(productsJson)) as JsonObject
     val productsArray=productsObjs.get("products") as JsonArray<JsonObject>
     productsArray.forEach {product ->
-    println(product.string("title") + "::" +product.string("description"))
+    println(product.string("title") + "::" )//+product.string("description"))
     }
 
 
@@ -46,11 +44,7 @@ fun parseProducts( productsJson: String) {
 }
 
 
-
 object wooCommerceLegacyV3Fuel {
-
-
-
     private val API_URL_FORMAT = "%s/wc-api/%s/%s"
     private val API_URL_ONE_ENTITY_FORMAT = "%s/wc-api/%s/%s/%d"
     private val URL_SECURED_FORMAT = "%s?%s"
@@ -60,7 +54,7 @@ object wooCommerceLegacyV3Fuel {
 
    // fun getAll(endpointBase: String, params: List<Pair<String, Any?>>): List<*> {
    fun getAll(endpointBase: String, params: Map<String, String>): String{
-        val url = String.format(API_URL_FORMAT, config.getUrl(), apiVersion, endpointBase)
+        val url = String.format(API_URL_FORMAT, config.url, apiVersion, endpointBase)
         val signature = OAuthSignature.getAsQueryString(config, url, HttpMethod.GET, params)
         val securedUrl = String.format(URL_SECURED_FORMAT, url, signature)
         // return client.getAll(securedUrl)

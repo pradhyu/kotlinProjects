@@ -29,7 +29,8 @@ ext {
 
 dependencies {
     //woo commerce api
-    compile "com.icoderman:wc-api-java:1.2"
+     compile "com.icoderman:wc-api-java:1.2"
+
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.6'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"

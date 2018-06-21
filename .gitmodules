@@ -1,0 +1,9 @@
+[submodule "Push-Notification-FCM-Kotlin"]
+	path = Push-Notification-FCM-Kotlin
+	url = git@github.com:MarcOliva/Push-Notification-FCM-Kotlin.git
+[submodule "Sample-Notification-Example"]
+	path = Sample-Notification-Example
+	url = git@github.com:jayakrishnan-pm/Sample-Notification-Example.git
+[submodule "Woocommerce-Android-Client"]
+	path = Woocommerce-Android-Client
+	url = git@github.com:rajatady/Woocommerce-Android-Client.git
